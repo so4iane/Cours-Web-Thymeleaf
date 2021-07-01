@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Gestion des Communes</title>
+    <link rel="stylesheet" href="/webjars/bootstrap/4.5.0/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="/webjars/font-awesome/4.7.0/css/font-awesome.css"/>
+    <script src="/webjars/jquery/3.5.1/jquery.min.js" type="application/javascript"></script>
+    <script src="/webjars/bootstrap/4.5.0/js/bootstrap.bundle.min.js" type="application/javascript"></script>
+</head>
+<body>
+
+<div>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <a class="navbar-brand" href="/">Gestion des Communes</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto">
+                <li><a href="/" class="nav-link">Liste des communes <span class="badge badge-primary">29997</span></a></li>
+                <li></li>
+            </ul>
+
+            <form class="form-inline my-2 my-lg-0" role="search" action="/" method="GET">
+                <div class="form-group">
+                    <input name="search" value="" class="form-control" placeholder="Rechercher..." type="text">
+                </div>
+                <button type="submit" class="btn btn-outline-success ml-2 my-2 my-sm-0">Rechercher</button>
+            </form>
+            <a href="/login" class="btn btn-outline-success ml-2 my-2 my-sm-0">Se connecter</a>
+            
+        </div>
+    </nav>
+</div>
+
+
+<div>
+    <div class="container">
+        <h2 th:if="${newCommune} != true">Détail de la commune [[${commune.codePostal}]], [[${commune.nom}]]</h2>
+        <h2 th:if="${newCommune}== true">Création d'une nouvelle commune</h2>
+        <div class="row">
+            <div class="col-sm-12 col-lg-6">
+            
+                <form id="saveForm" action="/communes" method="post">
+                    <div class="mt-2">
+                        <div>
+  <div class="form-group">
+    <label for="codeInsee">Code INSEE</label>
+    
+    <input type="text" value="01009" class="form-control is-valid" name="codeInsee"
+           id="codeInsee" th:value="${commune.codeInsee}">
+    
+  </div>
+</div>
+                        <div>
+  <div class="form-group">
+    <label for="nom">Nom</label>
+    
+    <input type="text" value="Andert Et Condon" class="form-control is-valid" name="nom"
+           id="nom" th:value="${commune.nom}">
+    
+  </div>
+</div>
+                        <div>
+  <div class="form-group">
+    <label for="codePostal">Code Postal</label>
+    
+    <input type="text" value="01300" class="form-control is-valid" name="codePostal"
+           id="codePostal" th:value="${commune.codePostal}">
+    
+  </div>
+</div>
+                        <div>
+  <div class="form-group">
+    <label for="latitude">Latitude</label>
+    
+    <input type="text" value="45.7873565333" class="form-control is-valid" name="latitude"
+           id="latitude" th:value="${commune.latitude}">
+    
+  </div>
+</div>
+                        <div>
+  <div class="form-group">
+    <label for="longitude">Longitude</label>
+    
+    <input type="text" value="5.65788307924" class="form-control is-valid" name="longitude"
+           id="longitude" th:value="${commune.longitude}">
+    
+  </div>
+</div>
+                    </div>
+                    <div class="col-sm-12 mt-2 text-center">
+                        <div class="col-sm-12 mt-2 text-center">
+                            <input th:if="${newCommune} != true" href="/communes/${commune.codeInsee}" form="saveForm" class="btn btn-primary" type="submit" value="Enregistrer"/>
+                            <input th:if="${newCommune} == true" href="/communes" form="saveForm" class="btn btn-primary" type="submit" value="Enregistrer"/>
+                            <a th:href="|/communes/${commune.codeInsee}/delete|" class="btn btn-danger" th:if="${newCommune} != true">Supprimer</a>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="col-lg-6" th:if="${newCommune} != true">
+                <iframe width="650" height="450" frameborder="0" scrolling="no" marginheight="0" marginwidth="0" src="https://www.openstreetmap.org/export/embed.html?bbox=5.557883079240001%2C45.2873565333%2C5.75788307924%2C46.2873565333&;layer=mapnik&;marker=45.7873565333%2C5.65788307924" style="border: 1px solid black"></iframe>
+            </div>
+            <div class="col-sm-12 text-center mt-2">
+
+                <form th:unless="${newCommune}" action="/communes/01009" method="get" class="form-inline mb-2">
+                    <label for="perimetre">Communes dans un périmètre de&nbsp;</label>
+                    <div class="input-group input-group-sm">
+                        <input type="number" name="perimetre" id="perimetre" class="form-control" th:value="${perimetre}">
+                        <div class="input-group-append">
+                            <span class="input-group-text">km</span>
+                        </div>
+                    </div>
+                    <input class="btn btn-outline-primary btn-sm float-right" type="submit" value="Rechercher"/>
+                </form>
+            </div>
+            <div class="col-sm-6">
+                <ul class="list-group" th:each="communeProche : ${communeProches}">
+                    <li class="list-group-item"><a th:href="|/communes/${communeProche.codeInsee}/|">[[${communeProche.nom}]] [[(${communeProche.codePostal})]] <span class="badge badge-primary float-right">[[${commune.getDistance(communeProche.latitude, communeProche.longitude)}]]</span></a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>
