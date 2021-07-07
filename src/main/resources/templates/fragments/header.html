@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml" lang="en">
+<head th:fragment="head(title)">
+  <meta charset="UTF-8">
+  <title th:text="${title}"></title>
+  <link rel="stylesheet" href="/webjars/bootstrap/4.5.0/css/bootstrap.min.css"/>
+  <link rel="stylesheet" href="/webjars/font-awesome/4.7.0/css/font-awesome.css"/>
+  <script src="/webjars/jquery/3.5.1/jquery.min.js" type="application/javascript"></script>
+  <script src="/webjars/bootstrap/4.5.0/js/bootstrap.bundle.min.js" type="application/javascript"></script>
+</head>
+<body>
+
+<nav th:fragment="navbar" class="navbar navbar-expand-lg navbar-light bg-light">
+  <a class="navbar-brand" href="/">Gestion des Communes</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+
+  <div class="collapse navbar-collapse" id="navbarSupportedContent">
+    <ul class="navbar-nav mr-auto">
+      <li><a href="/" class="nav-link">Liste des communes <span class="badge badge-primary" th:text="${@communeRepository.count()}">25000</span></a></li>
+      <li></li>
+    </ul>
+
+    <form class="form-inline my-2 my-lg-0" role="search" action="/" method="GET">
+      <div class="form-group">
+        <input name="search" value="" class="form-control" placeholder="Rechercher..." type="text">
+      </div>
+      <button type="submit" class="btn btn-outline-success ml-2 my-2 my-sm-0">Rechercher</button>
+    </form>
+    <a sec:authorize="!isAuthenticated()" href="/login" class="btn btn-outline-success ml-2 my-2 my-sm-0">Se connecter</a>
+    <a sec:authorize="isAuthenticated()" href="/logout"  class="btn btn-outline-success ml-2 my-2 my-sm-0">Se déconnecter</a>
+
+  </div>
+</nav>
+
+</body>
+</html>
