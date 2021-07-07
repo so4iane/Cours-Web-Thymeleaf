@@ -57,15 +57,20 @@ public class CommunesController {
                                  RedirectAttributes attributes, ModelMap model) {
         log.warn("on est dans le create!");
         if(!result.hasErrors()){
-            if(communeRepository.findById(commune.getCodeInsee())==null || communeRepository.findById(commune.getCodeInsee()).isEmpty()){
+            if(communeRepository.findById(commune.getCodeInsee())!=null && !communeRepository.findById(commune.getCodeInsee()).isEmpty()){
                 throw new IllegalArgumentException("Le code Insee choisi pour cette commune existe déjà!");
-            }
-            try{
-                commune = communeRepository.save(commune);
-                attributes.addFlashAttribute("type", "success");
-                attributes.addFlashAttribute("message", "Création de la Commune effectuée");
-            }catch (IllegalArgumentException e){
-                throw new IllegalArgumentException("Impossible de sauvegarder la commune : "+e.getMessage());
+            }else {
+                log.warn("tout est OK lol");
+                try {
+                    commune = communeRepository.save(commune);
+                    attributes.addFlashAttribute("type", "success");
+                    attributes.addFlashAttribute("message", "Création de la Commune effectuée");
+
+                } catch (IllegalArgumentException e) {
+                    throw new IllegalArgumentException("Impossible de sauvegarder la commune : " + e.getMessage());
+                }
+                log.warn("create tout va bien!");
+                return "redirect : /communes/" + commune.getCodeInsee();
             }
         }
         else{
@@ -78,12 +83,7 @@ public class CommunesController {
             model.addAttribute("type", "danger");
             model.addAttribute("message", "Erreur lors de la sauvegarde de la commune");
             return "detail";
-
-
-
-
         }
-        return "redirect : /communes/" + commune.getCodeInsee();
     }
 
     @PostMapping(value = "/{codeInsee}", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
@@ -99,23 +99,16 @@ public class CommunesController {
             }catch (IllegalArgumentException e){
                 throw new IllegalArgumentException("Impossible de sauvegarder la commune : "+e.getMessage());
             }
+            log.warn("update tout va bien!");
+            return "redirect : /communes/" + commune.getCodeInsee();
         }
         else{
-            //Avant
-            if(codeInsee==null || codeInsee.isEmpty() || codeInsee==""){
-                throw new IllegalArgumentException("Impossible de sauvegarder une commune sans code insee !");
-            }
             //Possibilité 1 faire un return sur la page d'erreur
             //Possibilité 2 on reste sur la même page en passant les messages d'erreur
             model.addAttribute("type", "danger");
             model.addAttribute("message", "Erreur lors de la sauvegarde de la commune");
             return "detail";
-
-
-
-
         }
-        return "redirect : /communes/" + commune.getCodeInsee();
     }
 
     @GetMapping("/{codeInsee}/delete")

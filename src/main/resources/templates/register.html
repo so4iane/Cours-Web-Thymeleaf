@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en" >
+<head th:replace="fragments/header :: head('Création d\'un compte')">
+</head>
+<body>
+<div>
+  <div class="container">
+    <h2>S'inscrire</h2>
+    <!--        Formulaire avec attribut action /register avec méthode post-->
+    <form th:action="@{/register}" method="post">
+      <!--        Champ name-->
+      <div class="form-group">
+        <label for="name">Prénom</label>
+        <input type="text" id="name" name="name" placeholder="Prénom" class="form-control">
+      </div>
+      <!--        Champ lastname-->
+      <div class="form-group">
+        <label for="lastName">Nom</label>
+        <input type="text" id="lastName" name="lastName" placeholder="Nom" class="form-control">
+      </div>
+      <!--        Champ email-->
+      <div class="form-group">
+        <label for="email">Email</label>
+        <input type="email" id="email" name="email" placeholder="Email" class="form-control">
+      </div>
+      <!--        Champ username-->
+      <div class="form-group">
+        <label for="username">Nom d'utilisateur</label>
+        <input type="text" id="username" name="username" placeholder="Nom d'utilisateur" class="form-control">
+      </div>
+      <!--        Champ password-->
+      <div class="form-group">
+        <label for="password">Mot de passe</label>
+        <input type="password" placeholder="Mot de passe" id="password" name="password" class="form-control">
+      </div>
+      <!--        Bouton submit-->
+      <button class="btn btn-lg btn-primary btn-block" type="submit">Inscription</button>
+    </form>
+  </div>
+</div>
+</body>
+</html>

@@ -29,6 +29,7 @@
       <button type="submit" class="btn btn-outline-success ml-2 my-2 my-sm-0">Rechercher</button>
     </form>
     <a sec:authorize="!isAuthenticated()" href="/login" class="btn btn-outline-success ml-2 my-2 my-sm-0">Se connecter</a>
+    <a sec:authorize="!isAuthenticated()" href="/register" class="btn btn-outline-success ml-2 my-2 my-sm-0">Créer un compte</a>
     <a sec:authorize="isAuthenticated()" href="/logout"  class="btn btn-outline-success ml-2 my-2 my-sm-0">Se déconnecter</a>
 
   </div>
