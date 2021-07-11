@@ -4,6 +4,8 @@ import com.ipiecoles.communes.web.model.Role;
 import com.ipiecoles.communes.web.model.User;
 import com.ipiecoles.communes.web.repository.RoleRepository;
 import com.ipiecoles.communes.web.repository.UserRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
@@ -18,26 +20,32 @@ import java.util.Collections;
 
 @Controller
 public class UserController {
+    Logger log = LoggerFactory.getLogger(this.getClass());
+
     @Autowired
     UserRepository userRepository;
 
     @Autowired
     private RoleRepository roleRepository;
 
-    //@Autowired
-    //private PasswordEncoder passwordEncoder;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
 
     @GetMapping("/login")
-    public String register(ModelMap model){
+    public String register(ModelMap model, RedirectAttributes attributes){
+        log.warn("cococonexion");
         model.addAttribute("user", new User());
-        return "register";
+        attributes.addFlashAttribute("type", "success");
+        attributes.addFlashAttribute("message", "Connexion réussie");
+        return "login";
     }
 
     @GetMapping("/logout")
-    public String logout(ModelMap model){
-        //model.put("isAuthenticated", false);
-        return "login";
+    public String logout(RedirectAttributes attributes){
+        attributes.addFlashAttribute("type", "success");
+        attributes.addFlashAttribute("message", "Déconnexion réussie");
+        return "redirect:/";
     }
 
     @GetMapping("/register")
@@ -49,15 +57,18 @@ public class UserController {
     public String createNewUser(@Valid User user, BindingResult bindingResult,
                                 final ModelMap model,
                                 RedirectAttributes attributes){
+        log.warn("fonction post");
         //Vérifier si un User existe déjà avec le même nom
         User userExists = userRepository.findByUserName(user.getUserName());
         if(userExists != null){
             bindingResult.rejectValue("userName", "error.username",
                     "Nom d'utilisateur déjà pris");
         }
+        log.warn("new user ok");
 
         //Gérer les erreurs de validation
         if(bindingResult.hasErrors()){
+            log.warn("des erreurs présentes dans le form");
             //Si pas OK je reste sur la page d'inscription
             // en indiquant les erreurs pour chaque champ
             model.addAttribute("type", "danger");
@@ -66,7 +77,7 @@ public class UserController {
         }
 
         //Si OK je sauvegarde le User en hâchant son mot de passe
-        //user.setPassword(passwordEncoder.encode(user.getPassword()));
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
         //Affecter le rôle USER...
         Role userRole = roleRepository.findByRole("ROLE_USER");
         user.setRoles(Collections.singletonList(userRole));

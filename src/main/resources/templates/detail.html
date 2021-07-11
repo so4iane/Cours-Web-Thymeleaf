@@ -18,7 +18,7 @@
         <div class="row">
             <div class="col-sm-12 col-lg-6">
 
-                <form id="saveForm" th:action="|${newCommune} ? /communes : /communes/${commune.codeInsee}|" method="post">
+                <form id="saveForm" th:action="${newCommune ? '/communes' : '/communes/'+commune.codeInsee}" method="post">
                     <!--Cette balise permet de générer un jeton pour l'authentification, sans elle on ne peut valider de formulaires
                     qui demandent une connexion. C'est pour éviter les attaques-->
                     <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />

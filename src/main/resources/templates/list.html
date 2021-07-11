@@ -1,20 +1,14 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" lang="en" >
-<head th:replace="fragments/header :: head('Liste des Communes')">
-</head>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml" lang="en">
 <body>
 
-<div th:insert="fragments/header :: navbar">
-</div>
-<div th:replace="fragments/messages :: success">
-</div>
 
 
-<div class="container">
+<div class="container" th:fragment="communeList">
     <h2>Liste des communes </h2>
     <div class="row">
         <div class="col-lg-12">
-            <div class="btn-group">
+            <div sec:authorize="hasRole('ADMIN')" class="btn-group">
                 <a href="/communes/new" class="btn btn-primary">Nouvelle commune</a>
             </div>
             <table class="table table-hover table-striped">
@@ -25,8 +19,8 @@
                             
                             <span>
                                 Code Insee
-                                <a th:if="${sortDirection}==ASC" th:href="|/?${page}=&${search}=&${size}=&sortDirection=DESC&sortProperty=codeInsee|"><i class="fa fa-chevron-up"></i></a>
-                                <a th:if="${sortDirection}==DESC" th:href="|/?${page}=&${search}=&${size}=&sortDirection=ASC&sortProperty=codeInsee|"><i class="fa fa-chevron-down"></i></a>
+                                <a th:if="${sortDirection}==ASC" th:href="|/?page=${page}&search=${search}&size=${size}&sortDirection=DESC&sortProperty=codeInsee|"><i class="fa fa-chevron-down"></i></a>
+                                <a th:if="${sortDirection}==DESC" th:href="|/?page=${page}&search=${search}&size=${size}&sortDirection=ASC&sortProperty=codeInsee|"><i class="fa fa-chevron-up"></i></a>
                             </span>
                         </div>
                         
@@ -35,32 +29,32 @@
                         
                         <div>
                             Code Postal
-                            <a th:if="${sortDirection}==ASC" th:href="|/?${page}=&;search=&;${size}=&;${sortDirection}=DESC&;${sortProperty}=codePostal|"><i class="fa fa-chevron-up"></i></a>
-                            <a th:if="${sortDirection}==DESC" th:href="|/?${page}=&;search=&;${size}=&;${sortDirection}=ASC&;${sortProperty}=codePostal|"><i class="fa fa-chevron-down"></i></a>
+                            <a th:if="${sortDirection}==ASC" th:href="|/?page=${page}&search=${search}&size=${size}&sortDirection=DESC&sortProperty=codePostal|"><i class="fa fa-chevron-down"></i></a>
+                            <a th:if="${sortDirection}==DESC" th:href="|/?page=${page}&search=${search}&size=${size}&sortDirection=ASC&sortProperty=codePostal|"><i class="fa fa-chevron-up"></i></a>
                         </div>
                     </th>
                     <th scope="col">
                         
                         <div>
                             Nom
-                            <a th:if="${sortDirection}==ASC" th:href="|/?${page}=&;${search}=&;${size}=&;${sortDirection}=ASC&;${sortProperty}=nom|"><i class="fa fa-chevron-up"></i></a>
-                            <a th:if="${sortDirection}==DESC" th:href="|/?${page}=&;${search}=&;${size}=&;${sortDirection}=DESC&;${sortProperty}=nom|"><i class="fa fa-chevron-down"></i></a>
+                            <a th:if="${sortDirection}==ASC" th:href="|/?page=${page}&search=${search}&size=${size}&sortDirection=DESC&sortProperty=nom|"><i class="fa fa-chevron-down"></i></a>
+                            <a th:if="${sortDirection}==DESC" th:href="|/?page=${page}&search=${search}&size=${size}&sortDirection=ASC&sortProperty=nom|"><i class="fa fa-chevron-up"></i></a>
                         </div>
                     </th>
                     <th scope="col">
                         
                         <div>
                             Latitude
-                            <a th:if="${sortDirection}==ASC" th:href="|/?${page}=&;${search}=&;${size}=&;${sortDirection}=ASC&;${sortProperty}=latitude|"><i class="fa fa-chevron-up"></i></a>
-                            <a th:if="${sortDirection}==DESC" th:href="|/?${page}=&;${search}=&;${size}=&;${sortDirection}=DESC&;${sortProperty}=latitude|"><i class="fa fa-chevron-down"></i></a>
+                            <a th:if="${sortDirection}==ASC" th:href="|/?page=${page}&search=${search}&size=${size}&sortDirection=DESC&sortProperty=latitude|"><i class="fa fa-chevron-down"></i></a>
+                            <a th:if="${sortDirection}==DESC" th:href="|/?page=${page}&search=${search}&size=${size}&sortDirection=ASC&sortProperty=latitude|"><i class="fa fa-chevron-up"></i></a>
                         </div>
                     </th>
                     <th scope="col">
                         
                         <div>
                             Longitude
-                            <a th:if="${sortDirection}==ASC" th:href="|/?${page}=&;${search}=&;${size}=&;${sortDirection}=ASC&;${sortProperty}=longitude|"><i class="fa fa-chevron-up"></i></a>
-                            <a th:if="${sortDirection}==DESC" th:href="|/?${page}=&;${search}=&;${size}=&;${sortDirection}=DESC&;${sortProperty}=longitude|"><i class="fa fa-chevron-down"></i></a>
+                            <a th:if="${sortDirection}==ASC" th:href="|/?page=${page}&search=${search}&size=${size}&sortDirection=DESC&sortProperty=longitude|"><i class="fa fa-chevron-down"></i></a>
+                            <a th:if="${sortDirection}==DESC" th:href="|/?page=${page}&search=${search}&size=${size}&sortDirection=ASC&sortProperty=longitude|"><i class="fa fa-chevron-up"></i></a>
                         </div>
                     </th>
                     <th scope="col"></th>
@@ -84,13 +78,13 @@
                         <label for="pageSizePicker">Taille des pages&nbsp;</label>
                         <select name="size" id="pageSizePicker" class="custom-select"
                                 onchange="javascript:this.form.submit()">
-                            <option th:each="size : ${#numbers.sequence(5, 20, 5)}" th:value="${size}" th:text="${size}">
+                            <option th:each="sizeChosen : ${sizeList}" th:value="${sizeChosen}" th:selected="${sizeChosen==size}" th:text="${sizeChosen}">
                             </option>
                         </select>
-                        <input type="hidden" name="sortDirection" value="">
-                        <input type="hidden" name="sortProperty" value="">
-                        <input type="hidden" name="search" value="">
-                        <input type="hidden" name="page" value="0">
+                        <input type="hidden" name="sortDirection" th:value="${sortDirection}">
+                        <input type="hidden" name="sortProperty" th:value="${sortProperty}">
+                        <input type="hidden" name="search" th:value="${search}">
+                        <input type="hidden" name="page" th:value="${page}">
                     </form>
                 </div>
                 <div class="col-lg-2 text-center">
@@ -98,8 +92,7 @@
                         <ul class="pagination">
                             
                             <li class="page-item" th:unless="${communes.isFirst()}">
-                                <a class="page-link" th:href="|/?page=${page-1}&;search=&;size=&;sortDirection=&;sortProperty=|"
-                                >
+                                <a class="page-link" th:href="|/?page=${page-1}&search=${search}&size=${size}&sortDirection=${sortDirection}&sortProperty=${sortProperty}|" th:value="${page}">
                                     &laquo;
                                 </a>
                             </li>
@@ -111,21 +104,21 @@
                                 <form action="/" method="get">
                                     <select name="page" id="pagePicker" class="custom-select"
                                             onchange="javascript:this.form.submit()">
-                                        <option value="${page}" selected="selected">Page [[${page+1}]]</option>
+                                        <option th:each="pageChosen : ${#numbers.sequence(1, communes.getTotalElements())}" th:value="${pageChosen}" th:selected="${pageChosen==page+1}" th:text="|Page ${pageChosen}|"></option>
                                     </select>
-                                    <input type="hidden" name="sortDirection" value="">
-                                    <input type="hidden" name="sortProperty" value="">
-                                    <input type="hidden" name="size" value="">
-                                    <input type="hidden" name="search" value="">
+                                    <input type="hidden" name="sortDirection" th:value="${sortDirection}">
+                                    <input type="hidden" name="sortProperty" th:value="${sortProperty}">
+                                    <input type="hidden" name="search" th:value="${search}">
+                                    <input type="hidden" name="page" th:value="${page}">
                                 </form>
                             </li>
-                            <li class="page-item">
-                                <a class="page-link" href="/?page=1&;search=&;size=&;sortDirection=&;sortProperty=" th:unless="${communes.isLast()}">
+                            <li class="page-item" th:unless="${communes.isLast()}">
+                                <a class="page-link" th:href="|/?page=${page+1}&search=${search}&size=${size}&sortDirection=${sortDirection}&sortProperty=${sortProperty}|" th:unless="${communes.isLast()}">
                                     &raquo;
                                 </a>
                             </li>
-                            <li class="page-item" disabled>
-                                <a class="page-link" href="#" th:if="${communes.isLast()}">
+                            <li class="page-item" th:if="${communes.isLast()}">
+                                <a class="page-link" href="#" disabled>
                                     &raquo;
                                 </a>
                             </li>

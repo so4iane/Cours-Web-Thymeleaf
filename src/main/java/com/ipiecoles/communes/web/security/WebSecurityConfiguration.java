@@ -2,6 +2,7 @@ package com.ipiecoles.communes.web.security;
 
 import com.ipiecoles.communes.web.service.MyUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -34,9 +35,9 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .passwordEncoder(passwordEncoder());
     }
 
+    @Bean
     public PasswordEncoder passwordEncoder(){
         //Mise en place de l'encoder BCrypt
-
         return new BCryptPasswordEncoder();
     }
 

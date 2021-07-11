@@ -10,9 +10,11 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import javax.persistence.EntityNotFoundException;
 import javax.validation.Valid;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
@@ -22,6 +24,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Controller
+@Validated
 @RequestMapping("/communes")
 public class CommunesController {
     Logger log = LoggerFactory.getLogger(this.getClass());
@@ -35,9 +38,14 @@ public class CommunesController {
     //@PreAuthorize("permitAll()")
     @GetMapping(value = "/{codeInsee}")
     public String commune(@PathVariable("codeInsee") String codeInsee,
-                          @RequestParam(defaultValue = "10") @Min(1) @Max(20) Integer perimetre,
+                          @RequestParam(defaultValue = "10") @Min(value = 1, message = "Le périmètre ne peut être ni négatif, ni null")
+                          @Max(value=20, message = "Merci de choisir un périmètre inférieur ou égal à 20 km") Integer perimetre,
                           final ModelMap model) {
+        log.warn("périmètre : "+perimetre);
         Optional<Commune> commune = communeRepository.findById(codeInsee);
+        if (commune.isEmpty() || commune == null){
+            throw new EntityNotFoundException("Impossible de récupérer la commune, le code Insee n'existe pas");
+        }
         model.put("commune", commune.get());
         model.put("communeProches", this.findCommunesProches(commune.get(), perimetre));
         model.put("perimetre", perimetre);
@@ -70,7 +78,7 @@ public class CommunesController {
                     throw new IllegalArgumentException("Impossible de sauvegarder la commune : " + e.getMessage());
                 }
                 log.warn("create tout va bien!");
-                return "redirect : /communes/" + commune.getCodeInsee();
+                return "redirect:/communes/" + commune.getCodeInsee();
             }
         }
         else{
@@ -100,7 +108,7 @@ public class CommunesController {
                 throw new IllegalArgumentException("Impossible de sauvegarder la commune : "+e.getMessage());
             }
             log.warn("update tout va bien!");
-            return "redirect : /communes/" + commune.getCodeInsee();
+            return "redirect:/communes/" + commune.getCodeInsee();
         }
         else{
             //Possibilité 1 faire un return sur la page d'erreur
@@ -114,6 +122,10 @@ public class CommunesController {
     @GetMapping("/{codeInsee}/delete")
     public String deleteCommune(
             @PathVariable String codeInsee, RedirectAttributes attributes) {
+        Optional<Commune> commune = communeRepository.findById(codeInsee);
+        if (commune.isEmpty() || commune == null){
+            throw new EntityNotFoundException("Impossible de supprimer la commune, le code Insee n'existe pas");
+        }
         communeRepository.deleteById(codeInsee);
         attributes.addFlashAttribute("type", "success");
         attributes.addFlashAttribute("message", "Suppression de la Commune effectuée");
