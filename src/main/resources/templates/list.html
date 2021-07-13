@@ -104,12 +104,12 @@
                                 <form action="/" method="get">
                                     <select name="page" id="pagePicker" class="custom-select"
                                             onchange="javascript:this.form.submit()">
-                                        <option th:each="pageChosen : ${#numbers.sequence(1, communes.getTotalElements())}" th:value="${pageChosen}" th:selected="${pageChosen==page}" th:text="|Page ${pageChosen}|"></option>
+                                        <option th:each="pageChosen : ${#numbers.sequence(1, communes.getTotalElements())}" th:value="${pageChosen-1}" th:selected="${pageChosen==page+1}" th:text="|Page ${pageChosen}|"></option>
                                     </select>
                                     <input type="hidden" name="sortDirection" th:value="${sortDirection}">
                                     <input type="hidden" name="sortProperty" th:value="${sortProperty}">
                                     <input type="hidden" name="search" th:value="${search}">
-                                    <input type="hidden" name="page" th:value="${page}">
+                                    <input type="hidden" name="page" th:value="${pageChosen}">
                                     <input type="hidden" name="size" th:value="${size}">
                                 </form>
                             </li>
