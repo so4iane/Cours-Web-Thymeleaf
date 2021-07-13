@@ -66,9 +66,9 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .loginPage("/login") //Defaut /login
                 .permitAll()
                 //Redirection de l'utilisateur si la connexion échoue
-                .failureUrl("/login?error=true")//Defaut /login?error
+                .failureUrl("/loginFail")//Defaut /login?error
                 //Redirection si la connexion réussit
-                .defaultSuccessUrl("/?successfulConnection=true")//pas de valeur par defaut
+                .defaultSuccessUrl("/successfulConnection")//pas de valeur par defaut
                 //Définition du nom du paramètre contenant l'utilisateur
                 .usernameParameter("username")//Defaut username
                 //Définition du nom du paramètre contenant le mot de passe

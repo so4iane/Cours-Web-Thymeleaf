@@ -33,23 +33,37 @@ public class UserController {
 
 
     @GetMapping("/login")
-    public String register(ModelMap model, RedirectAttributes attributes){
-        log.warn("cococonexion");
+    public String login(ModelMap model){
+        log.warn("Page d'authentification");
         model.addAttribute("user", new User());
+        return "login";
+    }
+    @GetMapping("/successfulConnection")
+    public String registerOk(RedirectAttributes attributes){
+        log.info("Authentification réussie");
         attributes.addFlashAttribute("type", "success");
         attributes.addFlashAttribute("message", "Connexion réussie");
-        return "login";
+        return "redirect:/?successfulConnection=true";
+    }
+    @GetMapping("/loginFail")
+    public String registerKo(ModelMap model, RedirectAttributes attributes){
+        log.info("Authentification échouée");
+        model.addAttribute("user", new User());
+        attributes.addFlashAttribute("type", "failure");
+        attributes.addFlashAttribute("message", "La combinaison utilisateur/mot de passe est incorrecte");
+        return "redirect:/login?error=true";
     }
 
     @GetMapping("/logout")
     public String logout(RedirectAttributes attributes){
+        log.info("Déconnexion");
         attributes.addFlashAttribute("type", "success");
         attributes.addFlashAttribute("message", "Déconnexion réussie");
-        return "redirect:/";
+        return "redirect:/login?logout=true";
     }
 
     @GetMapping("/register")
-    public String register(){
+    public String registerNewUser(){
         return "register";
     }
 
@@ -57,7 +71,6 @@ public class UserController {
     public String createNewUser(@Valid User user, BindingResult bindingResult,
                                 final ModelMap model,
                                 RedirectAttributes attributes){
-        log.warn("fonction post");
         //Vérifier si un User existe déjà avec le même nom
         User userExists = userRepository.findByUserName(user.getUserName());
         if(userExists != null){

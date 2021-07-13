@@ -29,6 +29,10 @@ public class IndexController {
                         @RequestParam(defaultValue = "ASC") String sortDirection,
                         @RequestParam(required = false)String search,
                         final ModelMap model) {
+        log.warn("page : "+page );
+        log.warn("sortDirection : "+sortDirection);
+        log.warn("sortProperty : "+sortProperty);
+        log.warn("size : "+size);
         if(sortDirection!=null && !sortDirection.equals("ASC") && !sortDirection.equals("DESC")){
             throw new IllegalArgumentException("Le paramètre sortDirection ne peut être que ASC ou DESC");
         }
